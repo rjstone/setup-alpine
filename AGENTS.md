@@ -60,10 +60,13 @@ the current one: if a push is refused, report it rather than looking for a way a
 
 As of 2026-11-12:
 
-- **`master` is not yet a clean mirror.** It is upstream `ae3b3dd` plus our `5d001b9` (#1)
-  and `12906b4` (#3), from before this policy. Both are already on `rjstone` and `v1`.
-  Making `master` match upstream means resetting it to upstream and force-pushing, which
-  is the owner's decision; agents must not do it.
+- `master` = upstream `ae3b3dd`, a clean mirror. It briefly carried our `5d001b9` (#1) and
+  `12906b4` (#3) from before this policy; on 2026-11-12 it was reset to upstream by a
+  force-push, at the owner's request, with force-push protection disabled for the purpose.
+  Both commits live on in `rjstone` and `v1`. Any future reset of `master` is the owner's
+  decision; agents must not do it unasked.
+- GitHub's "Sync fork" offers "Discard commits" only when the fork is both ahead of *and*
+  behind upstream. A `master` that is only ahead shows no such button.
 - Neither change has been offered upstream yet.
 - `v1` = `23b837e` = tag `v1.4.3`.
 
