@@ -20,26 +20,34 @@ Both are candidates to offer upstream (see *Upstream pull requests*).
 
 | Branch | Role | Rules |
 | --- | --- | --- |
+| `rjstone` | **Default branch and working branch.** All of our changes land here first. Fork-only files such as this `AGENTS.md` live here. | Essentially unrestricted. Agents commit and push here. |
+| feature branches off `rjstone` | Optional, for a change that wants its own PR or CI run before landing. Any name. | Unrestricted. |
+| `v1` | Personal release line, consumed by our other repos. Not offered upstream. | Merges only through a pull request with passing checks. No direct pushes. |
 | `master` | Mirror of upstream `jirutka/setup-alpine` `master`. No commits of our own. | Updates restricted to upstream fork syncing (GitHub "Sync fork"); force-push protection on. Agents never push here. |
-| `rjstone` | **Working branch.** All of our changes land here first. | No restrictions. Agents commit and push here. |
-| `upstream/<topic>` (suggested name) | Short-lived branch cut from `master` to carry one change upstream. | Cherry-pick from `rjstone`; open the PR against `jirutka/setup-alpine`. |
-| `v1` | Personal release line, consumed by our other repos. Not offered upstream. | Changes only through pull requests. |
+| `feat/<topic>`, `fix/<topic>` | Short-lived branch cut from `master` to carry one change upstream. | Cherry-picked from `rjstone`; PR against `jirutka/setup-alpine` `master`. |
 
 The owner adjusts branch protection rules over time. Don't treat a rule described here as
 the current one: if a push is refused, report it rather than looking for a way around it.
 
 ### Flow of a change
 
-1. Commit to `rjstone`. CI runs on every push (any branch), across `ubuntu-latest`
-   (26.04, sudo-rs), `ubuntu-24.04` and `ubuntu-22.04`, three Alpine branches and two arches.
-2. **Into `v1`:** open a PR from `rjstone` (or a topic branch off it) into `v1`. After the
-   merge, the owner tags a release on `v1`.
-3. **Upstream:** cut `upstream/<topic>` from `master`, `git cherry-pick` the commit(s) from
-   `rjstone`, push, and open a PR to `jirutka/setup-alpine` `master`. Keep each upstream
-   PR to one change, and drop fork-only details (pinned commit hashes in comments,
-   references to our repos).
-4. When upstream merges something, sync `master`, then merge `master` into `rjstone`
-   (and through a PR into `v1`) so the fork does not carry a duplicate of the change.
+1. **Make the change** on `rjstone`, or on a feature branch off it. CI runs on every push
+   (any branch), across `ubuntu-latest` (26.04, sudo-rs), `ubuntu-24.04` and
+   `ubuntu-22.04`, three Alpine branches and two arches.
+2. **Release it:** open a PR from `rjstone` (or the feature branch) into `v1`. It merges
+   once its checks pass. After the merge, the owner tags a release on `v1`.
+3. **Offer it upstream (separately, only if wanted):** cut `feat/<topic>` or `fix/<topic>`
+   from `master` and `git cherry-pick` the relevant commit(s) from `rjstone` or the feature
+   branch. Leave out everything fork-only:
+   - this `AGENTS.md` and any other files that exist only on `rjstone`;
+   - references to our repos, our tags or our pinned commit hashes in comments;
+   - unrelated changes: one change per upstream PR.
+
+   If a commit mixes fork-only and upstreamable parts, use `git cherry-pick --no-commit`
+   and unstage the fork-only parts before committing. Push the branch and open the PR to
+   `jirutka/setup-alpine` `master` (with the owner's go-ahead; see *Rules for agents*).
+4. **When upstream merges something,** sync `master`, then merge `master` into `rjstone`
+   (and through a PR into `v1`) so the fork does not carry the change twice.
 
 ## Releases and tags
 
@@ -74,8 +82,9 @@ As of 2026-11-12:
 
 ## Rules for agents
 
-- Work on `rjstone`. Don't push to `master` or `v1`, and don't create or move tags; the
-  owner does releases.
+- Work on `rjstone` or a feature branch off it; `feat/` and `fix/` branches off `master`
+  are fine too. Never push to `master` or `v1` (`v1` changes only by PR), and don't create
+  or move tags; the owner does releases.
 - Never force-push, rebase or amend anything already pushed, on any branch, unless the owner
   asks for that specific operation.
 - Don't open PRs against `jirutka/setup-alpine` without the owner's go-ahead: they are
