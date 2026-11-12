@@ -17,6 +17,9 @@ jobs:
           - aarch64  # emulated
         host-os:
           - ubuntu-latest
+          # Explicit, so sudo-rs stays covered while ubuntu-latest rolls over to
+          # 26.04, and after it moves on.
+          - ubuntu-26.04
           - ubuntu-24.04
           - ubuntu-22.04
     runs-on: ${{ matrix.host-os }}
