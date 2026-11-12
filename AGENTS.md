@@ -23,7 +23,7 @@ Both are candidates to offer upstream (see *Upstream pull requests*).
 | `rjstone` | **Default branch and working branch.** All of our changes land here first. Fork-only files such as this `AGENTS.md` live here. | Essentially unrestricted. Agents commit and push here. |
 | feature branches off `rjstone` | Optional, for a change that wants its own PR or CI run before landing. Any name. | Unrestricted. |
 | `v1` | Personal release line, consumed by our other repos. Not offered upstream. | Merges only through a pull request with passing checks. No direct pushes. |
-| `master` | Mirror of upstream `jirutka/setup-alpine` `master`. No commits of our own. | Updates restricted to upstream fork syncing (GitHub "Sync fork"); force-push protection on. Agents never push here. |
+| `master` | Mirror of upstream `jirutka/setup-alpine` `master`. No commits of our own. | Ruleset: restrict creations, restrict updates (fork sync allowed), restrict deletions, block force pushes. Only GitHub "Sync fork" moves it. Agents never push here. |
 | `feat/<topic>`, `fix/<topic>` | Short-lived branch cut from `master` to carry one change upstream. | Cherry-picked from `rjstone`; PR against `jirutka/setup-alpine` `master`. |
 
 The owner adjusts branch protection rules over time. Don't treat a rule described here as
@@ -84,8 +84,8 @@ As of 2026-11-12:
     Resetting `master` to upstream on 2026-11-12 left it with no commits, so GitHub closed
     it (08:51 UTC) and `refs/pull/37/head` now equals upstream `ae3b3dd`.
 
-  Follow-up: the node24 teardown is on `fix/node-update` (cut from `master`) for a new
-  upstream PR. The sudo-rs fix is not re-offered: upstream jirutka/setup-alpine#35
+  Follow-up: the node24 teardown was re-submitted upstream from `fix/node-update` (cut
+  from `master`); keep that branch as is while its PR is open. The sudo-rs fix is not re-offered: upstream jirutka/setup-alpine#35
   (zachsplat, open) makes the same fix with `--preserve-env`, which `rjstone` now matches.
 - `v1` = `23b837e` = tag `v1.4.3`.
 
