@@ -12,7 +12,7 @@ needed fixes faster than upstream ships them:
 | Change | Commit | Why |
 | --- | --- | --- |
 | node24 chroot teardown (`gacts/run-and-post-run`) | `5d001b9` (#1) | `webiny/action-post-run@3.1.0` is node20 and caused a Node 20 deprecation warning on every run. |
-| `sudo env` instead of `sudo -E` | `12906b4` (#3) | Ubuntu 26.04 runners (`ubuntu-latest` since Nov 2026) ship sudo-rs, which ignores a bare `-E`; every `INPUT_*` variable was dropped. |
+| No more `sudo -E` | `12906b4` (#3), then the `--preserve-env` change on `rjstone` | Ubuntu 26.04 runners (`ubuntu-latest` from Nov 2026) ship sudo-rs, which ignores a bare `-E`; every `INPUT_*` variable was dropped. First fixed with `sudo env` (v1.4.3), which also dropped the proxy variables; now `sudo --preserve-env=<list>`, the same line as upstream jirutka/setup-alpine#35 by zachsplat. Keep that line identical to #35. |
 
 Both are candidates to offer upstream (see *Upstream pull requests*).
 
@@ -32,7 +32,7 @@ the current one: if a push is refused, report it rather than looking for a way a
 ### Flow of a change
 
 1. **Make the change** on `rjstone`, or on a feature branch off it. CI runs on every push
-   (any branch), across `ubuntu-latest` (26.04, sudo-rs), `ubuntu-24.04` and
+   (any branch), across `ubuntu-latest`, `ubuntu-26.04` (sudo-rs), `ubuntu-24.04` and
    `ubuntu-22.04`, three Alpine branches and two arches.
 2. **Release it:** open a PR from `rjstone` (or the feature branch) into `v1`. It merges
    once its checks pass. After the merge, the owner tags a release on `v1`.
@@ -84,8 +84,9 @@ As of 2026-11-12:
     Resetting `master` to upstream on 2026-11-12 left it with no commits, so GitHub closed
     it (08:51 UTC) and `refs/pull/37/head` now equals upstream `ae3b3dd`.
 
-  To re-offer them, cut `fix/` or `feat/` branches from `master` and cherry-pick
-  `5d001b9` and `12906b4` from `rjstone`.
+  Follow-up: the node24 teardown is on `fix/node-update` (cut from `master`) for a new
+  upstream PR. The sudo-rs fix is not re-offered: upstream jirutka/setup-alpine#35
+  (zachsplat, open) makes the same fix with `--preserve-env`, which `rjstone` now matches.
 - `v1` = `23b837e` = tag `v1.4.3`.
 
 ## Rules for agents
