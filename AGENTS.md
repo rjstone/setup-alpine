@@ -20,7 +20,7 @@ Both are candidates to offer upstream (see *Upstream pull requests*).
 
 | Branch | Role | Rules |
 | --- | --- | --- |
-| `master` | Mirror of upstream `jirutka/setup-alpine` `master`. No commits of our own. | Keep in sync with upstream only (GitHub "Sync fork", or fast-forward). |
+| `master` | Mirror of upstream `jirutka/setup-alpine` `master`. No commits of our own. | Updates restricted to upstream fork syncing (GitHub "Sync fork"); force-push protection on. Agents never push here. |
 | `rjstone` | **Working branch.** All of our changes land here first. | No restrictions. Agents commit and push here. |
 | `upstream/<topic>` (suggested name) | Short-lived branch cut from `master` to carry one change upstream. | Cherry-pick from `rjstone`; open the PR against `jirutka/setup-alpine`. |
 | `v1` | Personal release line, consumed by our other repos. Not offered upstream. | Changes only through pull requests. |
@@ -65,6 +65,8 @@ As of 2026-11-12:
   force-push, at the owner's request, with force-push protection disabled for the purpose.
   Both commits live on in `rjstone` and `v1`. Any future reset of `master` is the owner's
   decision; agents must not do it unasked.
+- Since then the owner restricts `master` to upstream fork syncing only, with force-push
+  protection back on.
 - GitHub's "Sync fork" offers "Discard commits" only when the fork is both ahead of *and*
   behind upstream. A `master` that is only ahead shows no such button.
 - Neither change has been offered upstream yet.
