@@ -77,7 +77,15 @@ As of 2026-11-12:
   protection back on.
 - GitHub's "Sync fork" offers "Discard commits" only when the fork is both ahead of *and*
   behind upstream. A `master` that is only ahead shows no such button.
-- Neither change has been offered upstream yet.
+- Upstream PRs, both closed **unmerged**:
+  - jirutka/setup-alpine#36 (node24 teardown only), closed 2026-11-11; `refs/pull/36/head`
+    still holds `5d001b9`.
+  - jirutka/setup-alpine#37 (node24 teardown + sudo-rs fix), opened from our `master`.
+    Resetting `master` to upstream on 2026-11-12 left it with no commits, so GitHub closed
+    it (08:51 UTC) and `refs/pull/37/head` now equals upstream `ae3b3dd`.
+
+  To re-offer them, cut `fix/` or `feat/` branches from `master` and cherry-pick
+  `5d001b9` and `12906b4` from `rjstone`.
 - `v1` = `23b837e` = tag `v1.4.3`.
 
 ## Rules for agents
@@ -89,6 +97,8 @@ As of 2026-11-12:
   asks for that specific operation.
 - Don't open PRs against `jirutka/setup-alpine` without the owner's go-ahead: they are
   public and speak for the owner.
+- Before resetting or force-pushing any branch, check whether an open PR (here or
+  upstream) uses it as its head: resetting a PR's head branch can close that PR.
 - When the action's shell code changes, keep it working under both classic sudo and sudo-rs;
   don't rely on `sudo -E` or on `--preserve-env` without a list.
 - Keep this file current when the policy or the branch state changes.
